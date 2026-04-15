@@ -6,6 +6,16 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, MapPin, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { DateSelector } from './home/DateSelector';
+import { DestinationSelector } from './home/DestinationSelector';
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from './ui/select';
 
 type SearchTab = 'packages' | 'visa';
 
@@ -39,8 +49,8 @@ export function HeroSection() {
 
 	const handleVisaSearch = () => {
 		if (selectedCountry) {
-			const country = countries.find((c) => c.name === selectedCountry);
-			if (country) navigate(`/visa/${country.slug}`);
+			// const country = countries.find((c) => c.name === selectedCountry);
+			navigate(`/visa/${selectedCountry}?type=${selectedVisaType}`);
 		} else {
 			navigate('/visa');
 		}
@@ -156,31 +166,12 @@ export function HeroSection() {
 												<p className='text-xs text-muted-foreground font-body'>
 													Destination
 												</p>
-												<SelectDestination />
+												<DestinationSelector
+													destination={selectedDestination}
+													setDestination={setSelectedDestination}
+												/>
 											</div>
 										</div>
-										{showDestDropdown && (
-											<div className='absolute top-10 left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-elevated !z-[999999999999999] max-h-48 overflow-y-auto'>
-												{filteredDestinations.map((d) => (
-													<button
-														key={d.id}
-														onClick={() => {
-															setSelectedDestination(d.id);
-															setDestinationSearch(d.label);
-															setShowDestDropdown(false);
-														}}
-														className='w-full text-left px-4 py-3 font-body text-sm text-foreground hover:bg-muted transition-colors'
-													>
-														{d.label}
-													</button>
-												))}
-												{filteredDestinations.length === 0 && (
-													<p className='px-4 py-3 text-sm text-muted-foreground font-body'>
-														No destinations found
-													</p>
-												)}
-											</div>
-										)}
 									</div>
 
 									{/* Travel Date */}
@@ -190,12 +181,7 @@ export function HeroSection() {
 											<p className='text-xs text-muted-foreground font-body'>
 												Travel Date
 											</p>
-											<input
-												type='date'
-												value={travelDate}
-												onChange={(e) => setTravelDate(e.target.value)}
-												className='w-full bg-transparent font-body font-medium text-foreground outline-none text-sm'
-											/>
+											<DateSelector />
 										</div>
 									</div>
 
@@ -218,62 +204,35 @@ export function HeroSection() {
 												<p className='text-xs text-muted-foreground font-body'>
 													Country
 												</p>
-												<input
-													type='text'
-													placeholder='Select country...'
-													value={countrySearch}
-													onChange={(e) => {
-														setCountrySearch(e.target.value);
-														setShowCountryDropdown(true);
-													}}
-													onFocus={() => setShowCountryDropdown(true)}
-													className='w-full bg-transparent font-body font-medium text-foreground outline-none text-sm'
+												<DestinationSelector
+													destination={selectedCountry}
+													setDestination={setSelectedCountry}
 												/>
 											</div>
 										</div>
-										{showCountryDropdown && (
-											<div className='absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-elevated z-50 max-h-48 overflow-y-auto'>
-												{filteredCountries.map((c) => (
-													<button
-														key={c.slug}
-														onClick={() => {
-															setSelectedCountry(c.name);
-															setCountrySearch(`${c.flag} ${c.name}`);
-															setShowCountryDropdown(false);
-														}}
-														className='w-full text-left px-4 py-3 font-body text-sm text-foreground hover:bg-muted transition-colors'
-													>
-														{c.flag} {c.name}
-													</button>
-												))}
-												{filteredCountries.length === 0 && (
-													<p className='px-4 py-3 text-sm text-muted-foreground font-body'>
-														No countries found
-													</p>
-												)}
-											</div>
-										)}
 									</div>
 
 									{/* Visa Type select */}
 									<div className='flex items-center gap-3 px-4 py-3 rounded-xl bg-muted'>
 										<Search className='w-5 h-5 text-ocean flex-shrink-0' />
 										<div className='flex-1'>
-											<p className='text-xs text-muted-foreground font-body'>
+											<p className='text-sm text-muted-foreground font-body'>
 												Visa Type
 											</p>
-											<select
-												value={selectedVisaType}
-												onChange={(e) => setSelectedVisaType(e.target.value)}
-												className='w-full bg-transparent font-body font-medium text-foreground outline-none text-sm appearance-none cursor-pointer'
-											>
-												<option value=''>Select type...</option>
-												{visaTypes.map((vt) => (
-													<option key={vt.value} value={vt.value}>
-														{vt.label}
-													</option>
-												))}
-											</select>
+											<Select onValueChange={setSelectedVisaType}>
+												<SelectTrigger className='w-full max-w-40'>
+													<SelectValue placeholder='Visa Types' />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup>
+														{visaTypes.map((vt) => (
+															<SelectItem key={vt?.value} value={vt?.value}>
+																{vt?.label}
+															</SelectItem>
+														))}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
 										</div>
 									</div>
 
@@ -303,31 +262,5 @@ export function HeroSection() {
 				/>
 			)}
 		</section>
-	);
-}
-
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/components/ui/popover';
-
-export function SelectDestination() {
-	return (
-		<Popover>
-			<PopoverTrigger asChild>
-				<p className='text-sm my-2 font-bold text-primary cursor-pointer'>
-					Where to ?
-				</p>
-			</PopoverTrigger>
-			<PopoverContent className='w-80'>
-				<div className='grid grid-cols-2 gap-3 !p-2'>
-					<Button>India</Button>
-					<Button>Nepal</Button>
-					<Button>Pakistan</Button>
-					<Button>Singapore</Button>
-				</div>
-			</PopoverContent>
-		</Popover>
 	);
 }
