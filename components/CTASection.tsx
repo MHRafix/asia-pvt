@@ -1,6 +1,8 @@
+'use client';
+
 import { motion } from "framer-motion";
 import { ArrowRight, Phone } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export function CTASection() {
@@ -21,13 +23,13 @@ export function CTASection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="hero" size="xl" asChild>
-              <Link to="/appointment">
+              <Link href="/appointment">
                 Get Started
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </Button>
             <Button variant="heroOutline" size="xl" className="border-primary-foreground/30 text-primary-foreground" asChild>
-              <Link to="/contact">
+              <Link href="/contact">
                 <Phone className="w-5 h-5" />
                 Contact Us
               </Link>

@@ -1,6 +1,8 @@
+'use client';
+
 import { motion } from "framer-motion";
 import { ArrowRight, Calendar, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { blogPosts } from "@/data/blog";
@@ -26,7 +28,7 @@ export function BlogSection() {
             </p>
           </div>
           <Button variant="outline" size="lg" asChild>
-            <Link to="/blog">
+            <Link href="/blog">
               View All Posts
               <ArrowRight className="w-4 h-4" />
             </Link>
@@ -42,7 +44,7 @@ export function BlogSection() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
               <Card className="border-0 shadow-card hover:shadow-elevated transition-all duration-300 overflow-hidden group">
-                <Link to={`/blog/${post.id}`}>
+                <Link href={`/blog/${post.id}`}>
                   <div className="relative h-56 overflow-hidden">
                     <img
                       src={post.image}
@@ -67,14 +69,14 @@ export function BlogSection() {
                       <span className="font-body text-sm">{post.date}</span>
                     </div>
                   </div>
-                  <Link to={`/blog/${post.id}`}>
+                  <Link href={`/blog/${post.id}`}>
                     <h3 className="font-display text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
                       {post.title}
                     </h3>
                   </Link>
                   <p className="font-body text-muted-foreground line-clamp-2 mb-4">{post.excerpt}</p>
                   <Link
-                    to={`/blog/${post.id}`}
+                    href={`/blog/${post.id}`}
                     className="inline-flex items-center gap-2 font-body text-sm font-medium text-primary hover:gap-3 transition-all"
                   >
                     Read More

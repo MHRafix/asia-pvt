@@ -1,12 +1,15 @@
+'use client';
+
 import { motion } from "framer-motion";
 import { Star, Clock, Users, ArrowRight } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { packages } from "@/data/packages";
 
 export function PackagesSection() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <section className="py-24 bg-background">
@@ -37,7 +40,7 @@ export function PackagesSection() {
             >
               <Card
                 className="group overflow-hidden border-0 shadow-card hover:shadow-elevated transition-all duration-300 cursor-pointer"
-                onClick={() => navigate(`/packages/${pkg.id}`)}
+                onClick={() => router.push(`/packages/${pkg.id}`)}
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
@@ -73,7 +76,7 @@ export function PackagesSection() {
                       </p>
                     </div>
                     <Button variant="coral" size="sm" asChild>
-                      <Link to={`/packages/${pkg.id}`}>View</Link>
+                      <Link href={`/packages/${pkg.id}`}>View</Link>
                     </Button>
                   </div>
                 </CardContent>
@@ -84,7 +87,7 @@ export function PackagesSection() {
 
         <motion.div initial={{ opacity: 1 }} animate={{ opacity: 1 }} className="text-center mt-12">
           <Button variant="outline" size="lg" asChild>
-            <Link to="/packages">
+            <Link href="/packages">
               View All Packages
               <ArrowRight className="w-4 h-4" />
             </Link>

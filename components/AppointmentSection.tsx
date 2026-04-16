@@ -1,12 +1,15 @@
+'use client';
+
 import { motion } from "framer-motion";
 import { Calendar, ArrowRight } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { services } from "@/data/services";
 
 export function AppointmentSection() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <section className="py-24 bg-background">
@@ -37,7 +40,7 @@ export function AppointmentSection() {
             >
               <Card
                 className="border-0 shadow-soft hover:shadow-card transition-all duration-300 group cursor-pointer h-full"
-                onClick={() => navigate(`/services/${service.slug}`)}
+                onClick={() => router.push(`/services/${service.slug}`)}
               >
                 <CardContent className="p-6">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-hero flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -57,7 +60,7 @@ export function AppointmentSection() {
 
         <motion.div initial={{ opacity: 1, y: 0 }} animate={{ opacity: 1, y: 0 }} className="text-center">
           <Button variant="coral" size="xl" asChild>
-            <Link to="/appointment">
+            <Link href="/appointment">
               <Calendar className="w-5 h-5" />
               Schedule Your Appointment
             </Link>
