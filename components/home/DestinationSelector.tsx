@@ -28,6 +28,10 @@ export function DestinationSelector({ destination, setDestination }: any) {
 			label: 'Singapore',
 			value: 'singapore',
 		},
+		{
+			label: 'Canada',
+			value: 'canada',
+		},
 	];
 	return (
 		<Popover open={open} onOpenChange={setOpen}>

@@ -1,11 +1,14 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { services } from '@/data/services';
 import { ArrowRight, Calendar } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export function AppointmentSection() {
-	// const navigate = useNavigate();
+	const router = useRouter();
 
 	return (
 		<section className='py-24 bg-background'>
@@ -28,7 +31,7 @@ export function AppointmentSection() {
 						<div key={service.slug}>
 							<Card
 								className='border-0 shadow-soft hover:shadow-card transition-all duration-300 group cursor-pointer h-full'
-								// onClick={() => navigate(`/services/${service.slug}`)}
+								onClick={() => router.push(`/services/${service.slug}`)}
 							>
 								<CardContent className='p-6'>
 									<div className='w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300'>

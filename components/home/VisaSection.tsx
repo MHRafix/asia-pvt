@@ -1,8 +1,11 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { countries } from '@/data/countries';
 import { ArrowRight, Clock, FileCheck, Globe, Shield } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const features = [
 	{
@@ -24,6 +27,8 @@ const features = [
 ];
 
 export function VisaSection() {
+	const router = useRouter();
+
 	return (
 		<section className='py-24 bg-muted'>
 			<div className='container mx-auto px-4'>
@@ -73,7 +78,7 @@ export function VisaSection() {
 								<Card
 									key={country.slug}
 									className='border-0 shadow-soft hover:shadow-card transition-all duration-300 cursor-pointer group'
-									// onClick={() => navigate(`/visa/${country.slug}`)}
+									onClick={() => router.push(`/visa/${country.slug}`)}
 								>
 									<CardContent className='p-4'>
 										<div className='flex items-center gap-3 mb-3'>

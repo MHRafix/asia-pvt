@@ -17,12 +17,14 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { DateSelector } from './DateSelector';
 import { DestinationSelector } from './DestinationSelector';
 
 type SearchTab = 'packages' | 'visa';
 
 export function HeroSection() {
+	const router = useRouter();
 	const [activeTab, setActiveTab] = useState<SearchTab>('packages');
 	const [selectedDestination, setSelectedDestination] = useState('');
 	const [destinationSearch, setDestinationSearch] = useState('');
@@ -43,18 +45,18 @@ export function HeroSection() {
 
 	const handlePackageSearch = () => {
 		if (selectedDestination) {
-			// navigate(`/packages/${selectedDestination}`);
+			router.push(`/packages/${selectedDestination}`);
 		} else {
-			// navigate('/packages');
+			router.push('/packages');
 		}
 	};
 
 	const handleVisaSearch = () => {
 		if (selectedCountry) {
-			// const country = countries.find((c) => c.name === selectedCountry);
-			// navigate(`/visa/${selectedCountry}?type=${selectedVisaType}`);
+			const country = countries.find((c) => c.name === selectedCountry);
+			router.push(`/visa/${selectedCountry}?type=${selectedVisaType}`);
 		} else {
-			// navigate('/visa');
+			router.push('/visa');
 		}
 	};
 

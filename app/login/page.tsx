@@ -1,14 +1,11 @@
-import { Footer } from '@/components/Footer';
-import { Navbar } from '@/components/Navbar';
-import { PageBanner } from '@/components/PageBanner';
+import { PageBanner } from '@/components/common/PageBanner';
 import { Button } from '@/components/ui/button';
 import { User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const Login = () => {
 	return (
 		<div className='min-h-screen'>
-			<Navbar />
 			<div className='pt-20'>
 				<PageBanner
 					title='Login'
@@ -44,14 +41,13 @@ const Login = () => {
 
 							<div className='mt-8 text-center'>
 								<Button variant='outline' asChild>
-									<Link to='/'>Back to Home</Link>
+									<Link href='/'>Back to Home</Link>
 								</Button>
 							</div>
 						</div>
 					</div>
 				</section>
 			</div>
-			<Footer />
 		</div>
 	);
 };
