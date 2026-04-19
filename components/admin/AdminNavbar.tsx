@@ -18,17 +18,17 @@ export const AdminNavbar = () => {
   const [user, setUser] = useState<UserData | null>(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem('auth_user');
     if (userData) {
       setUser(JSON.parse(userData));
     }
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
     toast.success('Logged out successfully');
-    router.push('/');
+    router.push('/login');
   };
 
   return (

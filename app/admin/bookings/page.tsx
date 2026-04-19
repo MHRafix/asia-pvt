@@ -29,7 +29,7 @@ export default function BookingsPage() {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('auth_token');
       const response = await fetch('/api/bookings?limit=100', {
         headers: { 'Authorization': `Bearer ${token}` },
       });
@@ -50,7 +50,7 @@ export default function BookingsPage() {
 
     try {
       setDeleteLoading(bookingId);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('auth_token');
       
       const response = await fetch(`/api/bookings/${bookingId}`, {
         method: 'DELETE',

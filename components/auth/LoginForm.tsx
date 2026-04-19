@@ -45,8 +45,8 @@ export const LoginForm = () => {
       }
 
       // Store token in localStorage
-      localStorage.setItem('token', data.data.token);
-      localStorage.setItem('user', JSON.stringify(data.data.user));
+      localStorage.setItem('auth_token', data.data.token);
+      localStorage.setItem('auth_user', JSON.stringify(data.data.user));
 
       toast.success('Login successful!');
       

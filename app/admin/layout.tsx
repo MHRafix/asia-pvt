@@ -16,8 +16,8 @@ export default function AdminLayout({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('auth_user');
+    const token = localStorage.getItem('auth_token');
 
     if (!user || !token) {
       toast.error('Please login to access admin dashboard');
@@ -35,8 +35,8 @@ export default function AdminLayout({
       setIsAuthorized(true);
     } catch (error) {
       toast.error('Invalid session. Please login again');
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      localStorage.removeItem('auth_user');
+      localStorage.removeItem('auth_token');
       router.push('/login');
     } finally {
       setLoading(false);

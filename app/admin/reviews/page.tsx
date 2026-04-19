@@ -47,7 +47,7 @@ export default function ReviewsPage() {
 
     try {
       setDeleteLoading(reviewId);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('auth_token');
       
       const response = await fetch(`/api/reviews/${reviewId}`, {
         method: 'DELETE',

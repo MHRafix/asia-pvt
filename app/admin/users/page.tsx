@@ -29,7 +29,7 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('auth_token');
       const url = `/api/users${searchTerm ? `?search=${searchTerm}` : ''}`;
       
       const response = await fetch(url, {
@@ -53,7 +53,7 @@ export default function UsersPage() {
 
     try {
       setDeleteLoading(userId);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('auth_token');
       
       const response = await fetch(`/api/users/${userId}`, {
         method: 'DELETE',

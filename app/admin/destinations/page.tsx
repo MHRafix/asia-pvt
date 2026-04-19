@@ -44,7 +44,7 @@ export default function DestinationsPage() {
 
     try {
       setDeleteLoading(destId);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('auth_token');
       
       const response = await fetch(`/api/destinations/${destId}`, {
         method: 'DELETE',
