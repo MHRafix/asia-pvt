@@ -3,10 +3,12 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IUser extends Document {
   name: string;
   email: string;
-  password?: string;
+  password: string;
   phone?: string;
   profileImage?: string;
   bio?: string;
+  role: 'user' | 'admin';
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,6 +30,7 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
+      required: [true, 'Password is required'],
       minlength: [6, 'Password must be at least 6 characters'],
       select: false,
     },
@@ -41,6 +44,15 @@ const userSchema = new Schema<IUser>(
     bio: {
       type: String,
       maxlength: [500, 'Bio must be less than 500 characters'],
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
