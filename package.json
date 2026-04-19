@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "seed:admin": "node scripts/seed-admin.js",
+    "seed:users": "node scripts/seed-test-users.js",
+    "seed:all": "npm run seed:admin && npm run seed:users"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -44,6 +47,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.1.1",
     "date-fns": "4.1.0",
+    "dotenv": "^17.4.2",
     "embla-carousel-react": "8.6.0",
     "input-otp": "1.4.2",
     "jsonwebtoken": "^9.0.3",
