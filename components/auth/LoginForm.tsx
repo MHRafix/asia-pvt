@@ -56,7 +56,6 @@ export const LoginForm = () => {
       setTimeout(() => {
         if (data.data.user.role === 'admin') {
           router.push('/admin');
-          console.log(".....")
         } else if (callbackUrl) {
           router.push(callbackUrl);
         } else {
