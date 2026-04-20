@@ -38,7 +38,7 @@ export const useAuth = () => {
     setLoading(false);
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string, callbackUrl?: string) => {
     try {
       setLoading(true);
       const response = await fetch('/api/auth/login', {
@@ -62,11 +62,13 @@ export const useAuth = () => {
       
       toast.success('Login successful!');
       
-      // Redirect based on role
+      // Redirect based on role and callback URL
       if (user.role === 'admin') {
         router.push('/admin');
+      } else if (callbackUrl) {
+        router.push(callbackUrl);
       } else {
-        router.push('/');
+        router.push('/packages');
       }
 
       return { success: true };
@@ -79,7 +81,7 @@ export const useAuth = () => {
     }
   }, [router]);
 
-  const signup = useCallback(async (name: string, email: string, password: string, phone?: string) => {
+  const signup = useCallback(async (name: string, email: string, password: string, phone?: string, callbackUrl?: string) => {
     try {
       setLoading(true);
       const response = await fetch('/api/auth/register', {
@@ -102,7 +104,12 @@ export const useAuth = () => {
       storageUtils.setUser(user);
       
       toast.success('Account created successfully!');
-      router.push('/');
+      
+      if (callbackUrl) {
+        router.push(callbackUrl);
+      } else {
+        router.push('/packages');
+      }
 
       return { success: true };
     } catch (error) {

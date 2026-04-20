@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,8 @@ import { Loader } from 'lucide-react';
 
 export const SignupForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -77,9 +79,13 @@ export const SignupForm = () => {
 
       toast.success('Account created successfully!');
       
-      // Redirect to home
+      // Redirect to callback URL or packages page
       setTimeout(() => {
-        router.push('/');
+        if (callbackUrl) {
+          router.push(callbackUrl);
+        } else {
+          router.push('/packages');
+        }
       }, 1000);
     } catch (error) {
       console.error('Signup error:', error);

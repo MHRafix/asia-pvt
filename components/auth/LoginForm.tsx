@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,8 @@ import { Loader } from 'lucide-react';
 
 export const LoginForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -50,12 +52,15 @@ export const LoginForm = () => {
 
       toast.success('Login successful!');
       
-      // Redirect based on user role
+      // Redirect based on user role and callback URL
       setTimeout(() => {
         if (data.data.user.role === 'admin') {
           router.push('/admin');
+        } else if (callbackUrl) {
+          router.push(callbackUrl);
         } else {
-          router.push('/');
+          // Default redirect to packages page for regular users
+          router.push('/packages');
         }
       }, 1000);
     } catch (error) {
