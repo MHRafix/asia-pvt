@@ -1,6 +1,7 @@
 import { Footer } from '@/components/common/Footer';
 import { Navbar } from '@/components/common/Navbar';
 import { Analytics } from '@vercel/analytics/next';
+import { Toaster } from 'react-hot-toast';
 import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
@@ -54,6 +55,7 @@ export default function RootLayout({
 				<Navbar />
 				{children}
 				<Footer />
+				<Toaster position='top-right' />
 				{process.env.NODE_ENV === 'production' && <Analytics />}
 			</body>
 		</html>

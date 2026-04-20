@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import Destination from '@/lib/models/Destination';
-import { successResponse, errorResponse, HTTP_STATUS, ApiError } from '@/lib/api/response';
+import TravelPackage from '@/lib/models/TravelPackage';
+import { successResponse, HTTP_STATUS, ApiError } from '@/lib/api/response';
 import { handleError } from '@/lib/api/middleware';
-import { destinationSchemas } from '@/lib/api/validators';
+import { travelPackageSchemas } from '@/lib/api/validators';
 import { getUserFromToken } from '@/lib/auth';
 import { Types } from 'mongoose';
 
@@ -17,16 +17,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<Ro
     const { id } = await params;
 
     if (!Types.ObjectId.isValid(id)) {
-      throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Invalid destination ID');
+      throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Invalid package ID');
     }
 
-    const destination = await Destination.findById(id);
-    if (!destination) {
-      throw new ApiError(HTTP_STATUS.NOT_FOUND, 'Destination not found');
+    const travelPackage = await TravelPackage.findById(id).populate('destination', 'name country');
+    if (!travelPackage) {
+      throw new ApiError(HTTP_STATUS.NOT_FOUND, 'Package not found');
     }
 
     return NextResponse.json(
-      successResponse(destination, 'Destination retrieved successfully'),
+      successResponse(travelPackage, 'Package retrieved successfully'),
       { status: HTTP_STATUS.OK }
     );
   } catch (error) {
@@ -51,23 +51,23 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<Ro
     const { id } = await params;
 
     if (!Types.ObjectId.isValid(id)) {
-      throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Invalid destination ID');
+      throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Invalid package ID');
     }
 
     const body = await request.json();
-    const validatedData = destinationSchemas.update.parse(body);
+    const validatedData = travelPackageSchemas.create.parse(body);
 
-    const destination = await Destination.findByIdAndUpdate(id, validatedData, {
+    const travelPackage = await TravelPackage.findByIdAndUpdate(id, validatedData, {
       new: true,
       runValidators: true,
-    });
+    }).populate('destination', 'name country');
 
-    if (!destination) {
-      throw new ApiError(HTTP_STATUS.NOT_FOUND, 'Destination not found');
+    if (!travelPackage) {
+      throw new ApiError(HTTP_STATUS.NOT_FOUND, 'Package not found');
     }
 
     return NextResponse.json(
-      successResponse(destination, 'Destination updated successfully'),
+      successResponse(travelPackage, 'Package updated successfully'),
       { status: HTTP_STATUS.OK }
     );
   } catch (error) {
@@ -92,16 +92,16 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const { id } = await params;
 
     if (!Types.ObjectId.isValid(id)) {
-      throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Invalid destination ID');
+      throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Invalid package ID');
     }
 
-    const destination = await Destination.findByIdAndDelete(id);
-    if (!destination) {
-      throw new ApiError(HTTP_STATUS.NOT_FOUND, 'Destination not found');
+    const travelPackage = await TravelPackage.findByIdAndDelete(id);
+    if (!travelPackage) {
+      throw new ApiError(HTTP_STATUS.NOT_FOUND, 'Package not found');
     }
 
     return NextResponse.json(
-      successResponse(null, 'Destination deleted successfully'),
+      successResponse(null, 'Package deleted successfully'),
       { status: HTTP_STATUS.OK }
     );
   } catch (error) {

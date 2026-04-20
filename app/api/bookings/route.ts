@@ -1,44 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import TravelPackage from '@/lib/models/TravelPackage';
+import Booking from '@/lib/models/Booking';
 import { successResponse, HTTP_STATUS, ApiError } from '@/lib/api/response';
 import { handleError } from '@/lib/api/middleware';
-import { travelPackageSchemas } from '@/lib/api/validators';
+import { bookingSchemas } from '@/lib/api/validators';
 import { getUserFromToken } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
+    const token = request.headers.get('authorization')?.replace('Bearer ', '');
+    if (!token) {
+      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized');
+    }
+
+    const user = getUserFromToken(token);
+    if (!user) {
+      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Invalid token');
+    }
+
     await connectDB();
 
     const { searchParams } = new URL(request.url);
-    const destination = searchParams.get('destination');
-    const minPrice = searchParams.get('minPrice');
-    const maxPrice = searchParams.get('maxPrice');
-    const difficulty = searchParams.get('difficulty');
     const skip = parseInt(searchParams.get('skip') || '0');
     const limit = parseInt(searchParams.get('limit') || '10');
 
     const query: any = {};
-    if (destination) query.destination = destination;
-    if (minPrice || maxPrice) {
-      query.price = {};
-      if (minPrice) query.price.$gte = parseFloat(minPrice);
-      if (maxPrice) query.price.$lte = parseFloat(maxPrice);
+    if (user.role !== 'admin') {
+      query.user = user.userId;
     }
-    if (difficulty) query.difficulty = difficulty;
 
-    const packages = await TravelPackage.find(query)
-      .populate('destination', 'name country')
+    const bookings = await Booking.find(query)
+      .populate('user', 'name email phone')
+      .populate('travelPackage', 'name price destination')
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
 
-    const total = await TravelPackage.countDocuments(query);
+    const total = await Booking.countDocuments(query);
 
     return NextResponse.json(
       successResponse(
         {
-          packages,
+          bookings,
           pagination: {
             total,
             skip,
@@ -46,7 +49,7 @@ export async function GET(request: NextRequest) {
             pages: Math.ceil(total / limit),
           },
         },
-        'Packages retrieved successfully'
+        'Bookings retrieved successfully'
       ),
       { status: HTTP_STATUS.OK }
     );
@@ -57,27 +60,32 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify admin access
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
     if (!token) {
       throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized');
     }
 
     const user = getUserFromToken(token);
-    if (!user || user.role !== 'admin') {
-      throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Admin access required');
+    if (!user) {
+      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Invalid token');
     }
 
     await connectDB();
 
     const body = await request.json();
-    const validatedData = travelPackageSchemas.create.parse(body);
+    const validatedData = bookingSchemas.create.parse(body);
 
-    const travelPackage = await TravelPackage.create(validatedData);
-    await travelPackage.populate('destination', 'name country');
+    const booking = await Booking.create({
+      ...validatedData,
+      user: user.userId,
+      status: 'pending',
+    });
+
+    await booking.populate('user', 'name email phone');
+    await booking.populate('travelPackage', 'name price destination');
 
     return NextResponse.json(
-      successResponse(travelPackage, 'Package created successfully'),
+      successResponse(booking, 'Booking created successfully'),
       { status: HTTP_STATUS.CREATED }
     );
   } catch (error) {

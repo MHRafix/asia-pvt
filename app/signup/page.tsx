@@ -1,14 +1,14 @@
 import { PageBanner } from '@/components/common/PageBanner';
-import { LoginForm } from '@/components/auth/LoginForm';
-import { User } from 'lucide-react';
+import { SignupForm } from '@/components/auth/SignupForm';
+import { UserPlus } from 'lucide-react';
 
-const Login = () => {
+const Signup = () => {
 	return (
 		<div className='min-h-screen'>
 			<div className='pt-20'>
 				<PageBanner
-					title='Login'
-					subtitle='Sign in to your account and start exploring'
+					title='Create Account'
+					subtitle='Join us and start your adventure'
 				/>
 
 				<section className='py-24 bg-background'>
@@ -16,17 +16,17 @@ const Login = () => {
 						<div className='bg-card rounded-2xl shadow-elevated p-8'>
 							<div className='text-center mb-8'>
 								<div className='w-16 h-16 rounded-full bg-gradient-hero flex items-center justify-center mx-auto mb-4'>
-									<User className='w-8 h-8 text-primary-foreground' />
+									<UserPlus className='w-8 h-8 text-primary-foreground' />
 								</div>
 								<h2 className='font-display text-2xl font-bold text-foreground'>
-									Welcome Back
+									Join TravelHub
 								</h2>
 								<p className='font-body text-sm text-muted-foreground mt-2'>
-									Sign in to your account
+									Create an account to get started
 								</p>
 							</div>
 
-							<LoginForm />
+							<SignupForm />
 						</div>
 					</div>
 				</section>
@@ -35,4 +35,4 @@ const Login = () => {
 	);
 };
 
-export default Login;
+export default Signup;

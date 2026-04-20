@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import TravelPackage from '@/lib/models/TravelPackage';
+import Review from '@/lib/models/Review';
 import { successResponse, HTTP_STATUS, ApiError } from '@/lib/api/response';
 import { handleError } from '@/lib/api/middleware';
-import { travelPackageSchemas } from '@/lib/api/validators';
+import { reviewSchemas } from '@/lib/api/validators';
 import { getUserFromToken } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
@@ -12,33 +12,28 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const destination = searchParams.get('destination');
-    const minPrice = searchParams.get('minPrice');
-    const maxPrice = searchParams.get('maxPrice');
-    const difficulty = searchParams.get('difficulty');
+    const travelPackage = searchParams.get('travelPackage');
     const skip = parseInt(searchParams.get('skip') || '0');
     const limit = parseInt(searchParams.get('limit') || '10');
 
     const query: any = {};
     if (destination) query.destination = destination;
-    if (minPrice || maxPrice) {
-      query.price = {};
-      if (minPrice) query.price.$gte = parseFloat(minPrice);
-      if (maxPrice) query.price.$lte = parseFloat(maxPrice);
-    }
-    if (difficulty) query.difficulty = difficulty;
+    if (travelPackage) query.travelPackage = travelPackage;
 
-    const packages = await TravelPackage.find(query)
-      .populate('destination', 'name country')
+    const reviews = await Review.find(query)
+      .populate('user', 'name profileImage')
+      .populate('destination', 'name')
+      .populate('travelPackage', 'name')
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
 
-    const total = await TravelPackage.countDocuments(query);
+    const total = await Review.countDocuments(query);
 
     return NextResponse.json(
       successResponse(
         {
-          packages,
+          reviews,
           pagination: {
             total,
             skip,
@@ -46,7 +41,7 @@ export async function GET(request: NextRequest) {
             pages: Math.ceil(total / limit),
           },
         },
-        'Packages retrieved successfully'
+        'Reviews retrieved successfully'
       ),
       { status: HTTP_STATUS.OK }
     );
@@ -57,27 +52,32 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify admin access
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
     if (!token) {
       throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized');
     }
 
     const user = getUserFromToken(token);
-    if (!user || user.role !== 'admin') {
-      throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Admin access required');
+    if (!user) {
+      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Invalid token');
     }
 
     await connectDB();
 
     const body = await request.json();
-    const validatedData = travelPackageSchemas.create.parse(body);
+    const validatedData = reviewSchemas.create.parse(body);
 
-    const travelPackage = await TravelPackage.create(validatedData);
-    await travelPackage.populate('destination', 'name country');
+    const review = await Review.create({
+      ...validatedData,
+      user: user.userId,
+    });
+
+    await review.populate('user', 'name profileImage');
+    await review.populate('destination', 'name');
+    await review.populate('travelPackage', 'name');
 
     return NextResponse.json(
-      successResponse(travelPackage, 'Package created successfully'),
+      successResponse(review, 'Review created successfully'),
       { status: HTTP_STATUS.CREATED }
     );
   } catch (error) {
