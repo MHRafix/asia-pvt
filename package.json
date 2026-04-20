@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "seed:admin": "node scripts/seed-admin.js",
     "seed:users": "node scripts/seed-test-users.js",
-    "seed:all": "npm run seed:admin && npm run seed:users"
+    "seed:all": "npm run seed:admin && npm run seed:users",
+    "verify:admin": "node scripts/verify-admin.js",
+    "fix:admin-role": "node scripts/fix-admin-role.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

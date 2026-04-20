@@ -51,11 +51,12 @@ export const LoginForm = () => {
       localStorage.setItem('auth_user', JSON.stringify(data.data.user));
 
       toast.success('Login successful!');
-      
+
       // Redirect based on user role and callback URL
       setTimeout(() => {
         if (data.data.user.role === 'admin') {
           router.push('/admin');
+          console.log(".....")
         } else if (callbackUrl) {
           router.push(callbackUrl);
         } else {
