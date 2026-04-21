@@ -38,7 +38,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<Ro
     }
 
     // Check authorization
-    if (user.role !== 'admin' && booking.user.toString() !== user.userId) {
+    if (booking.user.toString() !== user.userId) {
       throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Forbidden');
     }
 
@@ -76,7 +76,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<Ro
     }
 
     // Check authorization
-    if (user.role !== 'admin' && booking.user.toString() !== user.userId) {
+    if (booking.user.toString() !== user.userId) {
       throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Forbidden');
     }
 
@@ -127,7 +127,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     }
 
     // Check authorization
-    if (user.role !== 'admin' && booking.user.toString() !== user.userId) {
+    if (booking.user.toString() !== user.userId) {
       throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Forbidden');
     }
 

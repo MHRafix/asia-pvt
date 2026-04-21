@@ -4,7 +4,6 @@ import Destination from '@/lib/models/Destination';
 import { successResponse, errorResponse, HTTP_STATUS, ApiError } from '@/lib/api/response';
 import { handleError } from '@/lib/api/middleware';
 import { destinationSchemas } from '@/lib/api/validators';
-import { getUserFromToken } from '@/lib/auth';
 import { Types } from 'mongoose';
 
 interface RouteParams {
@@ -36,17 +35,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<Ro
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<RouteParams> }) {
   try {
-    // Verify admin access
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized');
-    }
-
-    const user = getUserFromToken(token);
-    if (!user || user.role !== 'admin') {
-      throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Admin access required');
-    }
-
     await connectDB();
     const { id } = await params;
 
@@ -77,17 +65,6 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<Ro
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<RouteParams> }) {
   try {
-    // Verify admin access
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized');
-    }
-
-    const user = getUserFromToken(token);
-    if (!user || user.role !== 'admin') {
-      throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Admin access required');
-    }
-
     await connectDB();
     const { id } = await params;
 

@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate token
-    const token = generateToken(user._id.toString(), user.email, user.role);
+    const token = generateToken(user._id.toString(), user.email);
 
     return NextResponse.json(
       successResponse(
@@ -44,7 +44,6 @@ export async function POST(request: NextRequest) {
             name: user.name,
             email: user.email,
             phone: user.phone,
-            role: user.role,
             profileImage: user.profileImage,
           },
         },

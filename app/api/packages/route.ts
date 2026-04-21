@@ -4,7 +4,7 @@ import TravelPackage from '@/lib/models/TravelPackage';
 import { successResponse, HTTP_STATUS, ApiError } from '@/lib/api/response';
 import { handleError } from '@/lib/api/middleware';
 import { travelPackageSchemas } from '@/lib/api/validators';
-import { getUserFromToken } from '@/lib/auth';
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -57,17 +57,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify admin access
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized');
-    }
-
-    const user = getUserFromToken(token);
-    if (!user || user.role !== 'admin') {
-      throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Admin access required');
-    }
-
     await connectDB();
 
     const body = await request.json();
