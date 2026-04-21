@@ -47,8 +47,12 @@ export const LoginForm = () => {
       }
 
       // Store token in localStorage
+      console.log('[v0] Login response user:', data.data.user);
       localStorage.setItem('auth_token', data.data.token);
       localStorage.setItem('auth_user', JSON.stringify(data.data.user));
+      
+      const storedUser = localStorage.getItem('auth_user');
+      console.log('[v0] Stored user in localStorage:', JSON.parse(storedUser || '{}'));
 
       toast.success('Login successful!');
 
@@ -56,7 +60,6 @@ export const LoginForm = () => {
       setTimeout(() => {
         if (data.data.user.role === 'admin') {
           router.push('/admin');
-          console.log(".....")
         } else if (callbackUrl) {
           router.push(callbackUrl);
         } else {

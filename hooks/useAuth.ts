@@ -10,7 +10,6 @@ export interface AuthUser {
   name: string;
   email: string;
   phone?: string;
-  role: 'user' | 'admin';
   profileImage?: string;
 }
 
@@ -62,10 +61,8 @@ export const useAuth = () => {
       
       toast.success('Login successful!');
       
-      // Redirect based on role and callback URL
-      if (user.role === 'admin') {
-        router.push('/admin');
-      } else if (callbackUrl) {
+      // Redirect based on callback URL or default
+      if (callbackUrl) {
         router.push(callbackUrl);
       } else {
         router.push('/packages');

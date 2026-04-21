@@ -62,7 +62,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<Ro
     }
 
     // Check authorization
-    if (review.user.toString() !== user.userId && user.role !== 'admin') {
+    if (review.user.toString() !== user.userId) {
       throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Forbidden');
     }
 
@@ -113,7 +113,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     }
 
     // Check authorization
-    if (review.user.toString() !== user.userId && user.role !== 'admin') {
+    if (review.user.toString() !== user.userId) {
       throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Forbidden');
     }
 

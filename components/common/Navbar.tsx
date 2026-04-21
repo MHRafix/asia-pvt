@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 
-import { Menu, Plane, User, X, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, Plane, User, X, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { redirect, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -69,16 +69,6 @@ export function Navbar() {
 				<div className='hidden lg:flex items-center gap-3'>
 					{user ? (
 						<>
-							{user.role === 'admin' && (
-								<Button
-									variant='outline'
-									size='sm'
-									onClick={() => redirect('/admin')}
-								>
-									<LayoutDashboard className='w-4 h-4' />
-									Admin
-								</Button>
-							)}
 							<div className='flex items-center gap-2 px-3 py-2 bg-muted rounded-lg'>
 								<User className='w-4 h-4 text-muted-foreground' />
 								<span className='text-sm text-muted-foreground'>{user.name}</span>
@@ -154,19 +144,6 @@ export function Navbar() {
 						<div className='flex flex-col gap-3 pt-4'>
 							{user ? (
 								<>
-									{user.role === 'admin' && (
-										<Button
-											variant='outline'
-											className='w-full'
-											onClick={() => {
-												redirect('/admin');
-												setIsOpen(false);
-											}}
-										>
-											<LayoutDashboard className='w-4 h-4' />
-											Admin Dashboard
-										</Button>
-									)}
 									<Button
 										variant='ghost'
 										className='w-full'
