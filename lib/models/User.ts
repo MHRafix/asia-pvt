@@ -7,6 +7,7 @@ export interface IUser extends Document {
   phone?: string;
   profileImage?: string;
   bio?: string;
+  role: 'user' | 'admin';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,6 +43,11 @@ const userSchema = new Schema<IUser>(
     bio: {
       type: String,
       maxlength: [500, 'Bio must be less than 500 characters'],
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
     },
   },
   { timestamps: true }

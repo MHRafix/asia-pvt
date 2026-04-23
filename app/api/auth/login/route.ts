@@ -20,10 +20,7 @@ export async function POST(request: NextRequest) {
       throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Invalid email or password');
     }
 
-    // Check if user is active
-    if (!user.isActive) {
-      throw new ApiError(HTTP_STATUS.FORBIDDEN, 'Account is inactive');
-    }
+
 
     // Compare password
     const isPasswordValid = await comparePassword(validatedData.password, user.password);
@@ -33,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate token
-    const token = generateToken(user._id.toString(), user.email);
+    const token = generateToken(user._id.toString(), user.email, user.role);
 
     return NextResponse.json(
       successResponse(
@@ -45,6 +42,7 @@ export async function POST(request: NextRequest) {
             email: user.email,
             phone: user.phone,
             profileImage: user.profileImage,
+            role: user.role,
           },
         },
         'Login successful'
