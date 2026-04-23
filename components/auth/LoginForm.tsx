@@ -46,19 +46,22 @@ export const LoginForm = () => {
         return;
       }
 
-      // Store token in localStorage
-      console.log('[v0] Login response user:', data.data.user);
+      // Store token in localStorage for client-side auth context
+      // Note: httpOnly cookie is also set by the API for middleware auth
       localStorage.setItem('auth_token', data.data.token);
       localStorage.setItem('auth_user', JSON.stringify(data.data.user));
-      
-      const storedUser = localStorage.getItem('auth_user');
-      console.log('[v0] Stored user in localStorage:', JSON.parse(storedUser || '{}'));
 
       toast.success('Login successful!');
 
+      // Get redirect URL from search params (set by middleware for protected routes)
+      const redirectUrl = searchParams.get('redirect');
+
       // Redirect based on user role and callback URL
       setTimeout(() => {
-        if (data.data.user.role === 'admin') {
+        if (redirectUrl && data.data.user.role === 'admin') {
+          // Redirect to the originally requested admin page
+          router.push(redirectUrl);
+        } else if (data.data.user.role === 'admin') {
           router.push('/admin');
         } else if (callbackUrl) {
           router.push(callbackUrl);

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-require('dotenv').config();
+require('dotenv').config({ path: '.env.local' });
 
 // User Schema
 const userSchema = new mongoose.Schema({
@@ -31,29 +31,22 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+// Test users with admin and normal user
 const testUsers = [
   {
-    name: 'John Doe',
-    email: 'john@example.com',
-    password: 'Test@123',
+    name: 'Admin User',
+    email: 'admin@test.com',
+    password: 'admin123',
+    phone: '+1-555-0100',
+    bio: 'System Administrator',
+    role: 'admin',
+  },
+  {
+    name: 'Normal User',
+    email: 'user@test.com',
+    password: 'user123',
     phone: '+1-555-0101',
-    bio: 'Travel enthusiast',
-    role: 'user',
-  },
-  {
-    name: 'Jane Smith',
-    email: 'jane@example.com',
-    password: 'Test@123',
-    phone: '+1-555-0102',
-    bio: 'Adventure seeker',
-    role: 'user',
-  },
-  {
-    name: 'Mike Johnson',
-    email: 'mike@example.com',
-    password: 'Test@123',
-    phone: '+1-555-0103',
-    bio: 'Photographer',
+    bio: 'Regular user account',
     role: 'user',
   },
 ];
@@ -77,22 +70,33 @@ async function seedTestUsers() {
         });
         await user.save();
         createdCount++;
-        console.log(`[Seed] ✓ Created: ${userData.name} (${userData.email})`);
+        console.log(`[Seed] ✓ Created: ${userData.name} (${userData.email}) - Role: ${userData.role}`);
       } else {
-        console.log(`[Seed] - Skipped: ${userData.name} (already exists)`);
+        // Update role if needed
+        if (existingUser.role !== userData.role) {
+          existingUser.role = userData.role;
+          await existingUser.save();
+          console.log(`[Seed] ↑ Updated role: ${userData.name} -> ${userData.role}`);
+        } else {
+          console.log(`[Seed] - Skipped: ${userData.name} (already exists)`);
+        }
       }
     }
 
     console.log('');
-    console.log('═══════════════════════════════════════════');
-    console.log('  TEST USERS');
-    console.log('═══════════════════════════════════════════');
-    testUsers.forEach(user => {
-      console.log(`  Email:    ${user.email}`);
-      console.log(`  Password: ${user.password}`);
-      console.log('  ---');
-    });
-    console.log('═══════════════════════════════════════════');
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('  TEST CREDENTIALS');
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('');
+    console.log('  ADMIN USER (can access /admin):');
+    console.log('  Email:    admin@test.com');
+    console.log('  Password: admin123');
+    console.log('');
+    console.log('  NORMAL USER (cannot access /admin):');
+    console.log('  Email:    user@test.com');
+    console.log('  Password: user123');
+    console.log('');
+    console.log('═══════════════════════════════════════════════════════');
     console.log(`[Seed] Created ${createdCount} new test user(s)`);
     
     await mongoose.disconnect();
